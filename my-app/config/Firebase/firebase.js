@@ -6,6 +6,8 @@ import firebaseConfig from './firebaseConfig'
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig)
 
+export const admin = firebase.database()
+
 const Firebase = {
   // auth
   loginWithEmail: (email, password) => {

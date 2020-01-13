@@ -5,6 +5,8 @@ import { Appbar, Button } from 'react-native-paper';
 import { View, Text, StyleSheet } from 'react-native';
 import ItemComponent from '../components/ItemComponent';
 
+
+
 let txnRef = admin.ref('tx_usage')
 
 class Mainview extends React.Component {
