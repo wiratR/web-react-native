@@ -10,15 +10,27 @@ let txnRef = firebase.database().ref('tx_usage')
 class Home extends Component {
 
   state = {
-    items: []
+    tx_usage:[]
   }
 
   componentDidMount() {
-    txnRef.on('value', (snapshot) => {
-      let data = snapshot.val()
-      let items = Object.values(data)
-      this.setState({ items })
-    });
+    txnRef.on('value',(snapshot) => {
+        let tx_usage = snapshot.val();
+        let newState = [];
+        for(let item in tx_usage){
+          newState.push({
+              item_id     :item,  // this UUID
+              device_id   :tx_usage[item].device_id,
+              txn_type    :tx_usage[item].txn_type,
+              txn_status  :tx_usage[item].txn_status,
+              txn_date    :tx_usage[item].txn_date,
+              txn_time    :tx_usage[item].txn_time
+          })
+        }
+        this.setState({
+          tx_usage:newState
+        })
+    })
   }
 
   handleSignout = async () => {
@@ -37,10 +49,12 @@ class Home extends Component {
         </Appbar>
         <View style={styles.container}>
           {
-            this.state.items.length > 0
-              ? <ItemComponent items={this.state.items} />
+            
+            this.state.tx_usage.length > 0
+              ? <ItemComponent items={this.state.tx_usage} /> 
               : <Text>No items</Text>
           }
+
         </View>
         {/*Logout button*/}
         <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
