@@ -1,12 +1,11 @@
 import React from 'react'
-//import { ScrollView, View, Text, StyleSheet, Button } from 'react-native'
 import { connect } from 'react-redux'
-import Firebase, { appdb } from '../config/Firebase'
+import Firebase, { admin } from '../config/Firebase'
 import { Appbar, Button } from 'react-native-paper';
 import { View, Text, StyleSheet } from 'react-native';
 import ItemComponent from '../components/ItemComponent';
 
-let txnRef = appdb.ref('/tx_usage');
+let txnRef = admin.ref('tx_usage')
 
 class Mainview extends React.Component {
 
@@ -21,9 +20,9 @@ class Mainview extends React.Component {
 
     componentDidMount() {
         txnRef.on('value', (snapshot) => {
-            let data = snapshot.val();
-            let items = Object.values(data);
-            this.setState({ items });
+            let data = snapshot.val()
+            let items = Object.values(data)
+            this.setState({ items })
         });
     }
 
@@ -33,7 +32,6 @@ class Mainview extends React.Component {
             <Appbar>
                 <Appbar.Content title={'Txn List'} />
             </Appbar>
-{/*
                 <View style={styles.container}>
                     {
                         this.state.items.length > 0
@@ -41,7 +39,7 @@ class Mainview extends React.Component {
                             : <Text>No items</Text>
                     }
                 </View>
-                */}
+                
             {/*Logout button*/}
             <Button onPress={() => {this.handleSignout()}}>Logout</Button>
             </>

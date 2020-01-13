@@ -27,7 +27,7 @@ let Firebase = firebase.initializeApp(firebaseConfig)
 // ... before export default statemen
 export const db = firebase.firestore()
 
-export const appdb = app.database();
+export const admin = firebase.database()
 
 
 export default Firebase

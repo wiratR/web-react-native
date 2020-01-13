@@ -3,7 +3,7 @@ import { createSwitchNavigator, createAppContainer } from 'react-navigation'
 import Login from '../screens/Login'
 import Signup from '../screens/Signup'
 import Profile from '../screens/Profile'
-import Mainview from '../screens/Mainview';
+import Mainview from '../screens/Mainview'
 
 const SwitchNavigator = createSwitchNavigator(
     {
