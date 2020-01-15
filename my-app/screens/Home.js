@@ -6,6 +6,8 @@ import firebase from 'firebase';
 
 let txnRef = firebase.database().ref('tx_usage')
 
+
+
 class Home extends Component {
 
   state = {
@@ -33,7 +35,11 @@ class Home extends Component {
   }
   
   // goto next pages
-  goToDetails = () => this.props.navigation.navigate('Details')
+  goToDetails = (refKey) => 
+    this.props.navigation.navigate('Details', {
+        item: refKey,
+        // you can pass any type of object in here as well
+  });
 
   handleSignout = async () => {
     try {
@@ -56,7 +62,8 @@ class Home extends Component {
             this.state.tx_usage.length > 0
               ? // TODO it have a value
                 <View style={styles.itemsList}>
-                {this.state.tx_usage.map((item, index) => {
+                {
+                  this.state.tx_usage.map((item, index) => {
                     return (
                       <View key={index}>
                         <Text style={styles.itemtext}>
@@ -69,13 +76,17 @@ class Home extends Component {
                         <Text style={styles.itemtext}>time           : {item.txn_time}</Text>
                         {/* button click to details page per transaction id */}
                         {/*
-                        <View style={styles.buttonStyle}>
-                            <Button onPress={this.goToDetails} > View </Button>
-                        </View>
-                        */}
-                        <TouchableOpacity style={styles.buttonStyle} onPress={this.goToDetails}>
-                          <Text style={styles.buttonText}> View </Text>
+                        <TouchableOpacity 
+                              style={styles.buttonStyle}
+                              //goto next details pages passing a txnRef  
+                              onPress={this.goToDetails(index)}
+                            >
+                            <Text style={styles.buttonText}> View </Text>
                         </TouchableOpacity>
+                        */}
+                         <Button style={styles.buttonStyle} onPress={() => { this.goToDetails(item.item_id) }}> 
+                              <Text style={styles.buttonText}> View </Text> 
+                        </Button>
                       </View>
                     )
                   })
