@@ -1,3 +1,4 @@
 
 .env
 my-app/config/Firebase/firebaseConfig.js
+my-app/package-lock.json

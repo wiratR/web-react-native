@@ -4,21 +4,53 @@ import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
 
-
 class Details extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            refkey : props.navigation.getParam('item', '')
+            refkey : props.navigation.getParam('item', ''),
+            type : props.navigation.getParam('type', ''),
         };
-        console.log('key index : ' + this.state.refkey)
+    }
 
-        var docRef = firebase.firestore().collection("txn_usage").doc(this.state.refkey);
-        docRef.onSnapshot(function(snapshot) {
-            let data = snapshot.val();
-            console.log(data);
-            
+    componentDidMount() {
+        console.log('key index : ' + this.state.refkey);
+        console.log('Txn Type  : ' + this.state.type);
+        var txnType = this.state.type;
+        var refKey = this.state.refkey;
+        let docRef = firebase.firestore().collection('txn_usage').doc(refKey);
+        docRef
+        .onSnapshot(function(snapshot) {
+            console.log("Current data: ", snapshot.data());
+            let details = snapshot.data();
+            let dataNew = [];
+            let statusNew = [];
+            for(let item in details){
+                if (( item == 'data') &&  (txnType == 'refund'))
+                {
+                    dataNew.push({
+                        item_id    :item,  // this UUID
+                    })
+                }
+                if (( item == 'data') &&  (txnType == 'paymet'))
+                {
+                    dataNew.push({
+                        item_id    :item,  // this UUID
+                    })
+                }
+                if( item == 'status')
+                {
+                    statusNew.push({
+                        item_id      :item,  // this UUID
+                        code         :details[item].code,
+                        description  :details[item].description,
+                    })
+                }
+            }
+            // need to export object array to rander
+            console.log("data   : ", dataNew);
+            console.log("status : ", statusNew);
             //...
         }, function(error) {
             //...
@@ -26,27 +58,9 @@ class Details extends Component {
 
     }
 
-
-/*
-        var docRef = firebase.firestore().collection("txn_usage").doc(this.state.refkey);
-        //docRef.doc('data').get().then(function(doc) {
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log("Document data:", doc.data());
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-
-    */
-
-
     // go back to home pages
     goBackToHome = () => this.props.navigation.navigate('Home')
-
+    // handle sign out button
     handleSignout = async () => {
         try {
             await this.props.firebase.signOut()
@@ -67,7 +81,7 @@ class Details extends Component {
                         {/* TODO : add designed here*/}
                         <Text>Details </Text>
                         <Text>{this.state.refkey}</Text>
-                        <Text>value=1111</Text> 
+                        <Text>{this.state.type}</Text>
                         {/* button click to details page per transaction id */}
                         <TouchableOpacity 
                               style={styles.buttonStyle}

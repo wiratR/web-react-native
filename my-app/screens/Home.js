@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
 
 let txnRef = firebase.database().ref('tx_usage')
-
-
 
 class Home extends Component {
 
@@ -35,9 +33,10 @@ class Home extends Component {
   }
   
   // goto next pages
-  goToDetails = (refKey) => 
+  goToDetails = (refKey, Txntype) => 
     this.props.navigation.navigate('Details', {
         item: refKey,
+        type: Txntype,
         // you can pass any type of object in here as well
   });
 
@@ -75,16 +74,7 @@ class Home extends Component {
                         <Text style={styles.itemtext}>date           : {item.txn_date}</Text>
                         <Text style={styles.itemtext}>time           : {item.txn_time}</Text>
                         {/* button click to details page per transaction id */}
-                        {/*
-                        <TouchableOpacity 
-                              style={styles.buttonStyle}
-                              //goto next details pages passing a txnRef  
-                              onPress={this.goToDetails(index)}
-                            >
-                            <Text style={styles.buttonText}> View </Text>
-                        </TouchableOpacity>
-                        */}
-                         <Button style={styles.buttonStyle} onPress={() => { this.goToDetails(item.item_id) }}> 
+                         <Button style={styles.buttonStyle} onPress={() => { this.goToDetails(item.item_id,item.txn_type)}}> 
                               <Text style={styles.buttonText}> View </Text> 
                         </Button>
                       </View>
