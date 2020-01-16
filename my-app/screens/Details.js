@@ -6,60 +6,80 @@ import firebase from 'firebase';
 
 class Details extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            refkey : props.navigation.getParam('item', ''),
-            type : props.navigation.getParam('type', ''),
+            responseData: {},
+            responseStatus: {},
+            refkey: '',
+            type:''
         };
     }
 
-    componentDidMount() {
-        console.log('key index : ' + this.state.refkey);
-        console.log('Txn Type  : ' + this.state.type);
-        var txnType = this.state.type;
-        var refKey = this.state.refkey;
-        let docRef = firebase.firestore().collection('txn_usage').doc(refKey);
-        docRef
-        .onSnapshot(function(snapshot) {
-            console.log("Current data: ", snapshot.data());
-            let details = snapshot.data();
-            let dataNew = [];
-            let statusNew = [];
-            for(let item in details){
-                if (( item == 'data') &&  (txnType == 'refund'))
-                {
-                    dataNew.push({
-                        item_id    :item,  // this UUID
-                    })
+    async componentDidMount() {
+        let txnId = this.props.navigation.getParam('item', '');
+        let txnType = this.props.navigation.getParam('type', '');
+        let setNewData = [];
+        let setNewStatus = [];
+        const ref = firebase.firestore().collection('txn_usage').doc(txnId);
+        ref.get()
+        .then((doc) => {
+            if (doc.exists) {
+                //console.log("Document data:", doc.data());  
+                const details = doc.data();
+                for (let item in details) {
+                    if ((item == 'data') && (txnType == 'refund')) {
+                        setNewData.push({
+                            item_id: item,  // this UUID
+                            partnerTransactionId: details[item].partnerTransactionId,
+                            refundTransactionDateTime: details[item].refundTransactionDateTime,
+                            transactionId: details[item].transactionId,
+                        })
+                    }
+                    if ((item == 'data') && (txnType == 'payment')) {
+                        setNewData.push({
+                            item_id: item,  // this UUID
+                            partnerTransactionId: details[item].partnerTransactionId,
+                            billerId: details[item].billerId,
+                            payerBankCode: details[item].payerBankCode,
+                            payerTepaCode: details[item].payerTepaCode,
+                            reference1: details[item].reference1,
+                            reference2: details[item].reference2,
+                            refreence3: details[item].reference3,
+                            transactionAmount: details[item].transactionAmount,
+                            transactionDateTime: details[item].transactionDateTime,
+                            transactionId: details[item].transactionId,
+                        })
+                    }
+                    if (item == 'status') {
+                        setNewStatus.push({
+                            item_id: item,  // this UUID
+                            code: details[item].code,
+                            description: details[item].description,
+                        })
+                    }
                 }
-                if (( item == 'data') &&  (txnType == 'paymet'))
-                {
-                    dataNew.push({
-                        item_id    :item,  // this UUID
-                    })
-                }
-                if( item == 'status')
-                {
-                    statusNew.push({
-                        item_id      :item,  // this UUID
-                        code         :details[item].code,
-                        description  :details[item].description,
-                    })
-                }
+                this.setState({
+                    responseData    : setNewData,
+                    responseStatus  : setNewStatus,
+                    refkey          : doc.id,
+                    type            : this.props.navigation.getParam('type', ''),
+                    isLoading       : false
+                });
+
+                //console.log("Document data:", this.state.responseData);  
+                //console.log("Document data:", this.state.responseStatus);  
+
+            } else {
+                console.log("No such document!");
             }
-            // need to export object array to rander
-            console.log("data   : ", dataNew);
-            console.log("status : ", statusNew);
-            //...
-        }, function(error) {
-            //...
         });
 
     }
 
     // go back to home pages
     goBackToHome = () => this.props.navigation.navigate('Home')
+    
     // handle sign out button
     handleSignout = async () => {
         try {
@@ -79,9 +99,73 @@ class Details extends Component {
                 <ScrollView>
                     <View style={styles.container}>
                         {/* TODO : add designed here*/}
-                        <Text>Details </Text>
-                        <Text>{this.state.refkey}</Text>
-                        <Text>{this.state.type}</Text>
+                        <View style={styles.txnref}>
+                            <Text style={styles.itemtext} >
+                                {this.state.refkey}
+                            </Text>
+                            <Text style={styles.itemtext} >
+                                {this.state.type}
+                            </Text>
+                        </View>
+                        {this.state.type == 'refund'
+                            ? <View style={styles.itemsList}>
+                                {this.state.responseData.map((item, index) => {
+                                return (
+                                    <View key={index}>
+                                        <Text style={styles.itemtext}>Transaction Type ={this.state.type}</Text>
+                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
+                                        <Text style={styles.itemtext}>partnerTransactionId : {item.partnerTransactionId} </Text>
+                                        <Text style={styles.itemtext}>refundTransactionDateTime : {item.refundTransactionDateTime} </Text>
+                                        <Text style={styles.itemtext}>transactionId : {item.transactionId}</Text>
+                                    </View>
+                                )
+                                })}
+                                {this.state.responseStatus.map((item, index) => {
+                                return (
+                                    <View key={index}>
+                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
+                                        <Text style={styles.itemtext}>code : {item.code} </Text>
+                                        <Text style={styles.itemtext}>description : {item.description} </Text>
+                                    </View>
+                                )
+                                })}
+                            </View>
+                            // -------------------------------- //
+                            // startshows payment details
+                            : this.state.type == 'payment'
+                            ? <View style={styles.itemsList}>
+                                {this.state.responseData.map((item, index) => {
+                                return (
+                                    <View key={index}>
+                                        <Text style={styles.itemtext}>Transaction Type = {this.state.type}</Text>
+                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
+                                        <Text style={styles.itemtext}>partnerTransactionId : {item.partnerTransactionId} </Text>
+                                        <Text style={styles.itemtext}>billerId : {item.billerId} </Text>
+                                        <Text style={styles.itemtext}>payerBankCode : {item.payerBankCode}</Text>
+                                        <Text style={styles.itemtext}>payerTepaCode : {item.payerTepaCode}</Text>
+                                        <Text style={styles.itemtext}>reference1 : {item.reference1}</Text>
+                                        <Text style={styles.itemtext}>reference2 : {item.reference2}</Text>
+                                        <Text style={styles.itemtext}>reference3 : {item.reference3}</Text>
+                                        <Text style={styles.itemtext}>transactionAmount : {item.transactionAmount}</Text>
+                                        <Text style={styles.itemtext}>transactionDateTime : {item.transactionDateTime}</Text>
+                                        <Text style={styles.itemtext}>transactionId : {item.transactionId}</Text>
+                                    </View>
+                                )
+                                })}
+                                {this.state.responseStatus.map((item, index) => {
+                                return (
+                                    <View key={index}>
+                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
+                                        <Text style={styles.itemtext}>code : {item.code} </Text>
+                                        <Text style={styles.itemtext}>description : {item.description} </Text>
+                                    </View>
+                                )
+                                })}
+                                </View>
+                            :   <View style={styles.itemsList}>
+                                    <Text style={styles.itemtext}> Data Type Error </Text>
+                                </View>
+                        }
                         {/* button click to details page per transaction id */}
                         <TouchableOpacity 
                               style={styles.buttonStyle}
@@ -107,6 +191,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    itemsList: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+    },
+    itemtext: {
+        fontSize: 14,
+        textAlign: 'left',
     },
     buttonStyle: {
       alignItems: 'center',

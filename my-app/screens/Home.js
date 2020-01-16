@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
-
   },
   buttonStyle: {
     alignItems: 'center',
