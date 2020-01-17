@@ -1,16 +1,42 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
+import SideMenu from 'react-native-side-menu';
+import Menu from './Menu';
 
 let txnRef = firebase.database().ref('tx_usage')
+const image = require('../assets/menu.png');
 
 class Home extends Component {
 
-  state = {
-    tx_usage:[]
+  constructor(props) {
+    super(props);
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      tx_usage:{},
+      isOpen: false,
+      selectedItem: 'About',
+    };
+
   }
+
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen,
+    });
+  }
+
+  updateMenuState(isOpen) {
+    this.setState({ isOpen });
+  }
+
+  onMenuItemSelected = item =>
+    this.setState({
+      isOpen: false,
+      selectedItem: item,
+    });
 
   componentDidMount() {
     txnRef.on('value',(snapshot) => {
@@ -50,9 +76,15 @@ class Home extends Component {
   }
 
   render() {
+    const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
     return (
-      <>
-        <Appbar>
+      <SideMenu
+        menu={menu}
+        isOpen={this.state.isOpen}
+        onChange={isOpen => this.updateMenuState(isOpen)}
+      >
+        <>
+         <Appbar>
           <Appbar.Content title={'Txn List'} />
         </Appbar>
         <ScrollView>
@@ -87,9 +119,18 @@ class Home extends Component {
           }
         </View>
         </ScrollView>
-        {/*Logout button*/}
+        </>
         <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
-      </>
+        <TouchableOpacity
+          onPress={this.toggle}
+          style={styles.buttonMenu}
+        >
+          <Image
+            source={image}
+            style={{ width: 32, height: 32 }}
+          />
+        </TouchableOpacity>
+      </SideMenu>
     )
   }
 }
@@ -127,7 +168,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
-  }
+  },
+  buttonMenu: {
+    position: 'absolute',
+    top: 20,
+    padding: 10,
+  },
 })
 
 export default withFirebaseHOC(Home)

@@ -1,21 +1,44 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
+import SideMenu from 'react-native-side-menu';
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
+
+import Menu from './Menu';
+const image = require('../assets/menu.png');
 
 class Details extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            responseData: {},
-            responseStatus: {},
-            refkey: '',
-            type:'',
-            isLoading:true
+            responseData    : {},
+            responseStatus  : {},
+            refkey          : '',
+            type            :'',
+            isLoading       : true,
+            isOpen          : false,
+            selectedItem    : 'About',
         };
     }
+
+    toggle() {
+        this.setState({
+          isOpen: !this.state.isOpen,
+        });
+    }
+    
+    updateMenuState(isOpen) {
+        this.setState({ isOpen });
+    }
+    
+    onMenuItemSelected = item =>
+        this.setState({
+          isOpen: false,
+          selectedItem: item,
+    });
+
 
     componentDidMount() {
         let txnId = this.props.navigation.getParam('item', '');
@@ -93,8 +116,15 @@ class Details extends Component {
 
     render() {
         const isLoading = this.state.isLoading;
+        const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
+
         if (isLoading) {
             return(
+                <SideMenu
+                menu={menu}
+                isOpen={this.state.isOpen}
+                onChange={isOpen => this.updateMenuState(isOpen)}
+                >
                 <>
                 <Appbar>
                     <Appbar.Content title={'Details'} />
@@ -105,13 +135,28 @@ class Details extends Component {
                             <Text> Please waiting</Text>
                     </View>
                 </ScrollView>
+                </>
                 {/*Logout button*/}
                 <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
-                </>
+                <TouchableOpacity
+                onPress={this.toggle}
+                style={styles.buttonMenu}
+                >
+                <Image
+                    source={image}
+                    style={{ width: 32, height: 32 }}
+                />
+                </TouchableOpacity>
+                </SideMenu>
             )
         }
         else{
         return (
+            <SideMenu
+            menu={menu}
+            isOpen={this.state.isOpen}
+            onChange={isOpen => this.updateMenuState(isOpen)}
+            >
             <>
                 <Appbar>
                     <Appbar.Content title={'Details'} />
@@ -188,13 +233,21 @@ class Details extends Component {
                         >
                             <Text style={styles.buttonText}> Back To Home </Text>
                         </TouchableOpacity>
-
-
                     </View>
                 </ScrollView>
-                {/*Logout button*/}
+                </>
+                {/* Menu */}
                 <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
-            </>
+                <TouchableOpacity
+                onPress={this.toggle}
+                style={styles.buttonMenu}
+                >
+                <Image
+                    source={image}
+                    style={{ width: 32, height: 32 }}
+                />
+                </TouchableOpacity>
+                </SideMenu>
             )
             } 
         }
@@ -238,6 +291,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'left',
         color: 'blue',
+    },
+    buttonMenu: {
+        position: 'absolute',
+        top: 20,
+        padding: 10,
     }
 })
 
