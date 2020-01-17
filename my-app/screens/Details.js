@@ -12,11 +12,12 @@ class Details extends Component {
             responseData: {},
             responseStatus: {},
             refkey: '',
-            type:''
+            type:'',
+            isLoading:true
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         let txnId = this.props.navigation.getParam('item', '');
         let txnType = this.props.navigation.getParam('type', '');
         let setNewData = [];
@@ -56,6 +57,7 @@ class Details extends Component {
                             item_id: item,  // this UUID
                             code: details[item].code,
                             description: details[item].description,
+                            
                         })
                     }
                 }
@@ -74,7 +76,6 @@ class Details extends Component {
                 console.log("No such document!");
             }
         });
-
     }
 
     // go back to home pages
@@ -91,6 +92,25 @@ class Details extends Component {
     }
 
     render() {
+        const isLoading = this.state.isLoading;
+        if (isLoading) {
+            return(
+                <>
+                <Appbar>
+                    <Appbar.Content title={'Details'} />
+                </Appbar>
+                <ScrollView>
+                    {/* Loading pages */}
+                    <View style={styles.container}>
+                            <Text> Please waiting</Text>
+                    </View>
+                </ScrollView>
+                {/*Logout button*/}
+                <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
+                </>
+            )
+        }
+        else{
         return (
             <>
                 <Appbar>
@@ -98,17 +118,9 @@ class Details extends Component {
                 </Appbar>
                 <ScrollView>
                     <View style={styles.container}>
-                        {/* TODO : add designed here*/}
-                        <View style={styles.txnref}>
-                            <Text style={styles.itemtext} >
-                                {this.state.refkey}
-                            </Text>
-                            <Text style={styles.itemtext} >
-                                {this.state.type}
-                            </Text>
-                        </View>
                         {this.state.type == 'refund'
                             ? <View style={styles.itemsList}>
+                                <Text style={styles.txnHeader} >{this.state.refkey}</Text>
                                 {this.state.responseData.map((item, index) => {
                                 return (
                                     <View key={index}>
@@ -134,6 +146,7 @@ class Details extends Component {
                             // startshows payment details
                             : this.state.type == 'payment'
                             ? <View style={styles.itemsList}>
+                                <Text style={styles.txnHeader} >{this.state.refkey}</Text>
                                 {this.state.responseData.map((item, index) => {
                                 return (
                                     <View key={index}>
@@ -163,6 +176,7 @@ class Details extends Component {
                                 })}
                                 </View>
                             :   <View style={styles.itemsList}>
+                                    <Text style={styles.txnHeader} >{this.state.refkey}</Text>
                                     <Text style={styles.itemtext}> Data Type Error </Text>
                                 </View>
                         }
@@ -181,8 +195,9 @@ class Details extends Component {
                 {/*Logout button*/}
                 <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
             </>
-        )
-    } 
+            )
+            } 
+        }
 }
 
 const styles = StyleSheet.create({
@@ -217,6 +232,12 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
       color: 'white',
+    },
+    txnHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        color: 'blue',
     }
 })
 
