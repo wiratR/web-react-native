@@ -3,40 +3,21 @@ import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, } from 're
 import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
-import SideMenu from 'react-native-side-menu';
-import Menu from './Menu';
+// implement menu
+import ScreenName from '../components/ScreenName.js'    // pull in the ScreenName component from ScreenName.js
+import Header from '../components/Header.js'            // pull in header with DrawerTrigger
 
 let txnRef = firebase.database().ref('tx_usage')
-const image = require('../assets/menu.png');
 
 class Home extends Component {
 
   constructor(props) {
     super(props);
-    this.toggle = this.toggle.bind(this);
     this.state = {
       tx_usage:{},
-      isOpen: false,
-      selectedItem: 'About',
     };
 
   }
-
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
-  }
-
-  updateMenuState(isOpen) {
-    this.setState({ isOpen });
-  }
-
-  onMenuItemSelected = item =>
-    this.setState({
-      isOpen: false,
-      selectedItem: item,
-    });
 
   componentDidMount() {
     txnRef.on('value',(snapshot) => {
@@ -76,19 +57,21 @@ class Home extends Component {
   }
 
   render() {
-    const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
     return (
-      <SideMenu
-        menu={menu}
-        isOpen={this.state.isOpen}
-        onChange={isOpen => this.updateMenuState(isOpen)}
-      >
         <>
+        <React.Fragment>
+          <Header />
+          <View style={styles.container}>
+            <ScreenName name={'Screen Home'}/>
+          </View>
+        </React.Fragment>
+        {/*
          <Appbar>
           <Appbar.Content title={'Txn List'} />
         </Appbar>
+        */}
         <ScrollView>
-        <View style={styles.container}>
+        <View style={styles.viewHome}>
           {
             this.state.tx_usage.length > 0
               ? // TODO it have a value
@@ -119,18 +102,8 @@ class Home extends Component {
           }
         </View>
         </ScrollView>
-        </>
         <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
-        <TouchableOpacity
-          onPress={this.toggle}
-          style={styles.buttonMenu}
-        >
-          <Image
-            source={image}
-            style={{ width: 32, height: 32 }}
-          />
-        </TouchableOpacity>
-      </SideMenu>
+        </>
     )
   }
 }
@@ -139,6 +112,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  viewHome : {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop : 20,
     alignItems: 'center',
     justifyContent: 'center'
   },

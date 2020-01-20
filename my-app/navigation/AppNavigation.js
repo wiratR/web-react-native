@@ -1,16 +1,11 @@
-import { createStackNavigator } from 'react-navigation-stack'
-import Home from '../screens/Home'
-import Details from '../screens/Details'
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import DrawerNavigator from './DrawerNavigator';
 
-const AppNavigation = createStackNavigator(
-  {
-      Home: { screen: Home },
-      Details: { screen: Details }
-  },
-  {
-    initialRouteName: 'Home',
-    headerMode: 'none'
-  }
-)
-
-export default AppNavigation
+export default createAppContainer(
+  createSwitchNavigator({
+    // Additional routes such as a login route could
+    // be added here:
+    // Login: LoginNavigator,
+    Main: DrawerNavigator
+  })
+);

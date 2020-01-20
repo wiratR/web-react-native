@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
-import SideMenu from 'react-native-side-menu';
+//import SideMenu from 'react-native-side-menu';
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
 
-import Menu from './Menu';
-const image = require('../assets/menu.png');
+import ScreenName from '../components/ScreenName.js'
+import Header from '../components/Header.js'
+
+//import Menu from './Menu';
+//const image = require('../assets/menu.png');
 
 class Details extends Component {
 
@@ -18,11 +21,11 @@ class Details extends Component {
             refkey          : '',
             type            :'',
             isLoading       : true,
-            isOpen          : false,
-            selectedItem    : 'About',
+            //isOpen          : false,
+            //selectedItem    : 'About',
         };
     }
-
+/*
     toggle() {
         this.setState({
           isOpen: !this.state.isOpen,
@@ -38,7 +41,7 @@ class Details extends Component {
           isOpen: false,
           selectedItem: item,
     });
-
+*/
 
     componentDidMount() {
         let txnId = this.props.navigation.getParam('item', '');
@@ -116,16 +119,25 @@ class Details extends Component {
 
     render() {
         const isLoading = this.state.isLoading;
-        const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
-
+        //const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
         if (isLoading) {
             return(
+
+                
+                /*
                 <SideMenu
                 menu={menu}
                 isOpen={this.state.isOpen}
                 onChange={isOpen => this.updateMenuState(isOpen)}
                 >
+                */
                 <>
+                    <React.Fragment>
+                        <Header />
+                        <View style={styles.container}>
+                            <ScreenName name={'Screen Details'} />
+                        </View>
+                    </React.Fragment>
                 <Appbar>
                     <Appbar.Content title={'Details'} />
                 </Appbar>
@@ -135,9 +147,9 @@ class Details extends Component {
                             <Text> Please waiting</Text>
                     </View>
                 </ScrollView>
-                </>
-                {/*Logout button*/}
                 <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
+                </>
+                /*
                 <TouchableOpacity
                 onPress={this.toggle}
                 style={styles.buttonMenu}
@@ -148,16 +160,25 @@ class Details extends Component {
                 />
                 </TouchableOpacity>
                 </SideMenu>
+                */
             )
         }
         else{
         return (
+            /*
             <SideMenu
             menu={menu}
             isOpen={this.state.isOpen}
             onChange={isOpen => this.updateMenuState(isOpen)}
             >
+            */
             <>
+                <React.Fragment>
+                    <Header />
+                    <View style={styles.container}>
+                        <ScreenName name={'Screen Details'} />
+                    </View>
+                </React.Fragment>
                 <Appbar>
                     <Appbar.Content title={'Details'} />
                 </Appbar>
@@ -235,9 +256,10 @@ class Details extends Component {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
-                </>
-                {/* Menu */}
                 <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
+                </>
+                //{/* Menu */}
+                /*
                 <TouchableOpacity
                 onPress={this.toggle}
                 style={styles.buttonMenu}
@@ -248,6 +270,7 @@ class Details extends Component {
                 />
                 </TouchableOpacity>
                 </SideMenu>
+                */
             )
             } 
         }
