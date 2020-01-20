@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Icon } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
@@ -64,7 +64,7 @@ class Home extends Component {
     return (
         <>
         <React.Fragment>
-          <Header />
+          <Header  />
           <View style={styles.headerCenter}>
             <ScreenName name={'Home'}/>
           </View>

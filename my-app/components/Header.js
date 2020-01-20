@@ -6,7 +6,6 @@ import DrawerTrigger from './DrawerTrigger'
 class Header extends React.Component {
 
     render() {
-        //console.log("Create Header : ");
         return (
             <View style={styles.header}>
                 <DrawerTrigger />
