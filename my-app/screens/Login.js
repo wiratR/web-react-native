@@ -43,7 +43,8 @@ class Login extends Component {
       const response = await this.props.firebase.loginWithEmail(email, password)
 
       if (response.user) {
-        this.props.navigation.navigate('App')
+        //this.props.navigation.navigate('App')
+        this.props.navigation.navigate('Main')
       }
     } catch (error) {
       actions.setFieldError('general', error.message)

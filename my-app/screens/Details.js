@@ -1,15 +1,10 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
-//import SideMenu from 'react-native-side-menu';
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
-
 import ScreenName from '../components/ScreenName.js'
 import Header from '../components/Header.js'
-
-//import Menu from './Menu';
-//const image = require('../assets/menu.png');
 
 class Details extends Component {
 
@@ -19,89 +14,71 @@ class Details extends Component {
             responseData    : {},
             responseStatus  : {},
             refkey          : '',
-            type            :'',
+            type            : '',
             isLoading       : true,
-            //isOpen          : false,
-            //selectedItem    : 'About',
         };
     }
-/*
-    toggle() {
-        this.setState({
-          isOpen: !this.state.isOpen,
-        });
-    }
-    
-    updateMenuState(isOpen) {
-        this.setState({ isOpen });
-    }
-    
-    onMenuItemSelected = item =>
-        this.setState({
-          isOpen: false,
-          selectedItem: item,
-    });
-*/
 
-    componentDidMount() {
-        let txnId = this.props.navigation.getParam('item', '');
-        let txnType = this.props.navigation.getParam('type', '');
-        let setNewData = [];
-        let setNewStatus = [];
-        const ref = firebase.firestore().collection('txn_usage').doc(txnId);
-        ref.get()
-        .then((doc) => {
-            if (doc.exists) {
-                //console.log("Document data:", doc.data());  
-                const details = doc.data();
-                for (let item in details) {
-                    if ((item == 'data') && (txnType == 'refund')) {
-                        setNewData.push({
-                            item_id: item,  // this UUID
-                            partnerTransactionId: details[item].partnerTransactionId,
-                            refundTransactionDateTime: details[item].refundTransactionDateTime,
-                            transactionId: details[item].transactionId,
-                        })
-                    }
-                    if ((item == 'data') && (txnType == 'payment')) {
-                        setNewData.push({
-                            item_id: item,  // this UUID
-                            partnerTransactionId: details[item].partnerTransactionId,
-                            billerId: details[item].billerId,
-                            payerBankCode: details[item].payerBankCode,
-                            payerTepaCode: details[item].payerTepaCode,
-                            reference1: details[item].reference1,
-                            reference2: details[item].reference2,
-                            refreence3: details[item].reference3,
-                            transactionAmount: details[item].transactionAmount,
-                            transactionDateTime: details[item].transactionDateTime,
-                            transactionId: details[item].transactionId,
-                        })
-                    }
-                    if (item == 'status') {
-                        setNewStatus.push({
-                            item_id: item,  // this UUID
-                            code: details[item].code,
-                            description: details[item].description,
-                            
-                        })
-                    }
-                }
-                this.setState({
-                    responseData    : setNewData,
-                    responseStatus  : setNewStatus,
-                    refkey          : doc.id,
-                    type            : this.props.navigation.getParam('type', ''),
-                    isLoading       : false
-                });
-
-                //console.log("Document data:", this.state.responseData);  
-                //console.log("Document data:", this.state.responseStatus);  
-
-            } else {
-                console.log("No such document!");
-            }
-        });
+    resetForm = () => {
+          console.log("Screen Details() : reset rorm");
+          let txnId = this.props.navigation.getParam('item', '');
+          let txnType = this.props.navigation.getParam('type', '');
+          let setNewData = [];
+          let setNewStatus = [];
+          const ref = firebase.firestore().collection('txn_usage').doc(txnId);
+          ref.get()
+          .then((doc) => {
+              if (doc.exists) {
+                 // console.log("Document data:", doc.data());  
+                  const details = doc.data();
+                  for (let item in details) {
+                      if ((item == 'data') && (txnType == 'refund')) {
+                          setNewData.push({
+                              item_id: item,  // this UUID
+                              partnerTransactionId: details[item].partnerTransactionId,
+                              refundTransactionDateTime: details[item].refundTransactionDateTime,
+                              transactionId: details[item].transactionId,
+                          })
+                      }
+                      if ((item == 'data') && (txnType == 'payment')) {
+                          setNewData.push({
+                              item_id: item,  // this UUID
+                              partnerTransactionId: details[item].partnerTransactionId,
+                              billerId: details[item].billerId,
+                              payerBankCode: details[item].payerBankCode,
+                              payerTepaCode: details[item].payerTepaCode,
+                              reference1: details[item].reference1,
+                              reference2: details[item].reference2,
+                              refreence3: details[item].reference3,
+                              transactionAmount: details[item].transactionAmount,
+                              transactionDateTime: details[item].transactionDateTime,
+                              transactionId: details[item].transactionId,
+                          })
+                      }
+                      if (item == 'status') {
+                          setNewStatus.push({
+                              item_id: item,  // this UUID
+                              code: details[item].code,
+                              description: details[item].description,
+                              
+                          })
+                      }
+                  }
+                  this.setState({
+                      responseData    : setNewData,
+                      responseStatus  : setNewStatus,
+                      refkey          : doc.id,
+                      type            : this.props.navigation.getParam('type', ''),
+                      isLoading       : false,
+                  });
+  
+                  //console.log("Document data:", this.state.responseData);  
+                 // console.log("Document data:", this.state.responseStatus);  
+  
+              } else {
+                  console.log("No such document!");
+              }
+          });        
     }
 
     // go back to home pages
@@ -118,71 +95,61 @@ class Details extends Component {
     }
 
     render() {
-        const isLoading = this.state.isLoading;
-        //const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
-        if (isLoading) {
+       console.log("Screen Details() : Start Rander ................. ");
+       var isLoading    = this.state.isLoading;
+       var isNewTxnId   = this.props.navigation.getParam('item', '');
+     //  console.log("Screen Details() : old ref txn Name " + this.state.refkey);
+     //  console.log("Screen Details() : Txn name " + isNewTxnId);
+       if ( this.state.refkey != isNewTxnId && (isLoading == false))
+       {
             return(
-
-                
-                /*
-                <SideMenu
-                menu={menu}
-                isOpen={this.state.isOpen}
-                onChange={isOpen => this.updateMenuState(isOpen)}
-                >
-                */
                 <>
                     <React.Fragment>
                         <Header />
-                        <View style={styles.container}>
-                            <ScreenName name={'Screen Details'} />
+                        <View style={styles.headerCenter}>
+                        <ScreenName name={'Details'}/>
                         </View>
                     </React.Fragment>
-                <Appbar>
-                    <Appbar.Content title={'Details'} />
-                </Appbar>
-                <ScrollView>
+                    <ScrollView>
                     {/* Loading pages */}
-                    <View style={styles.container}>
-                            <Text> Please waiting</Text>
-                    </View>
-                </ScrollView>
-                <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
+                        <View style={styles.container}>
+                                <Text > Please waiting</Text>
+                                {this.resetForm()}
+                        </View>
+                    </ScrollView>
                 </>
-                /*
-                <TouchableOpacity
-                onPress={this.toggle}
-                style={styles.buttonMenu}
-                >
-                <Image
-                    source={image}
-                    style={{ width: 32, height: 32 }}
-                />
-                </TouchableOpacity>
-                </SideMenu>
-                */
+            )
+       }
+       if (isLoading) {
+            return(
+                <>
+                <React.Fragment>
+                    <Header />
+                    <View style={styles.headerCenter}>
+                    <ScreenName name={'Details'}/>
+                    </View>
+                </React.Fragment>
+                    <ScrollView>
+                    {/* Loading pages */}
+                        <View style={styles.container}>
+                                <Text > Please waiting</Text>
+                                {this.resetForm()}
+                        </View>
+                    </ScrollView>
+                </>
             )
         }
         else{
         return (
-            /*
-            <SideMenu
-            menu={menu}
-            isOpen={this.state.isOpen}
-            onChange={isOpen => this.updateMenuState(isOpen)}
-            >
-            */
             <>
                 <React.Fragment>
                     <Header />
-                    <View style={styles.container}>
-                        <ScreenName name={'Screen Details'} />
+                    <View style={styles.headerCenter}>
+                    <ScreenName name={'Details'}/>
                     </View>
                 </React.Fragment>
-                <Appbar>
-                    <Appbar.Content title={'Details'} />
-                </Appbar>
-                <ScrollView>
+                <ScrollView
+                    >
                     <View style={styles.container}>
                         {this.state.type == 'refund'
                             ? <View style={styles.itemsList}>
@@ -256,21 +223,7 @@ class Details extends Component {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
-                <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
                 </>
-                //{/* Menu */}
-                /*
-                <TouchableOpacity
-                onPress={this.toggle}
-                style={styles.buttonMenu}
-                >
-                <Image
-                    source={image}
-                    style={{ width: 32, height: 32 }}
-                />
-                </TouchableOpacity>
-                </SideMenu>
-                */
             )
             } 
         }
@@ -319,7 +272,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 20,
         padding: 10,
-    }
+    },
+    headerCenter: {
+        paddingTop: 35,
+        position: 'absolute',
+        left: 160,
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'left',
+    },
 })
 
 export default withFirebaseHOC(Details)

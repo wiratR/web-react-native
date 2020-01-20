@@ -4,8 +4,8 @@ import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
 // implement menu
-import ScreenName from '../components/ScreenName.js'    // pull in the ScreenName component from ScreenName.js
-import Header from '../components/Header.js'            // pull in header with DrawerTrigger
+import ScreenName from '../components/ScreenName'    // pull in the ScreenName component from ScreenName.js
+import Header from '../components/Header'            // pull in header with DrawerTrigger
 
 let txnRef = firebase.database().ref('tx_usage')
 
@@ -16,7 +16,6 @@ class Home extends Component {
     this.state = {
       tx_usage:{},
     };
-
   }
 
   componentDidMount() {
@@ -34,42 +33,37 @@ class Home extends Component {
           })
         }
         this.setState({
-          tx_usage:newState
+          tx_usage:newState,
         })
+      
     })
   }
   
   // goto next pages
-  goToDetails = (refKey, Txntype) => 
-    this.props.navigation.navigate('Details', {
-        item: refKey,
-        type: Txntype,
-        // you can pass any type of object in here as well
-  });
-
-  handleSignout = async () => {
-    try {
-      await this.props.firebase.signOut()
-      this.props.navigation.navigate('Auth')
-    } catch (error) {
-      console.log(error)
-    }
+  goToDetails = (refKey, txnType) => 
+  {
+     console.log ("goToDetails pages");
+     console.log ("key     =  " + refKey);
+     console.log ("type    =  " + txnType);
+      this.props.navigation.navigate('Details', {
+          item: refKey,
+          type: txnType,
+          // you can pass any type of object in here as well
+      });
   }
 
+
   render() {
+    console.log("Screen Home() : Start Rander ................. ");
+
     return (
         <>
         <React.Fragment>
           <Header />
-          <View style={styles.container}>
-            <ScreenName name={'Screen Home'}/>
+          <View style={styles.headerCenter}>
+            <ScreenName name={'Home'}/>
           </View>
         </React.Fragment>
-        {/*
-         <Appbar>
-          <Appbar.Content title={'Txn List'} />
-        </Appbar>
-        */}
         <ScrollView>
         <View style={styles.viewHome}>
           {
@@ -102,7 +96,6 @@ class Home extends Component {
           }
         </View>
         </ScrollView>
-        <Button onPress={() => { this.handleSignout() }}>SignOut</Button>
         </>
     )
   }
@@ -118,7 +111,7 @@ const styles = StyleSheet.create({
   viewHome : {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop : 20,
+    paddingTop : 10,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -154,6 +147,14 @@ const styles = StyleSheet.create({
     top: 20,
     padding: 10,
   },
+  headerCenter: {
+    paddingTop: 35,
+    position: 'absolute',
+    left: 160,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'left',
+},
 })
 
 export default withFirebaseHOC(Home)
