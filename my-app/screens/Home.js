@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Icon } from 'react-native'
 import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
@@ -10,6 +10,13 @@ import Header from '../components/Header'            // pull in header with Draw
 let txnRef = firebase.database().ref('tx_usage')
 
 class Home extends Component {
+
+  /*
+  static navigationOptions = {
+    drawerIcon: ({ tintColor }) => (
+      <Icon name="home" style={{ fontSize: 24, color: tintColor }} />
+    )
+  }*/
 
   constructor(props) {
     super(props);
@@ -42,9 +49,9 @@ class Home extends Component {
   // goto next pages
   goToDetails = (refKey, txnType) => 
   {
-     console.log ("goToDetails pages");
-     console.log ("key     =  " + refKey);
-     console.log ("type    =  " + txnType);
+     //console.log ("goToDetails pages");
+     //console.log ("key     =  " + refKey);
+     //console.log ("type    =  " + txnType);
       this.props.navigation.navigate('Details', {
           item: refKey,
           type: txnType,
@@ -52,10 +59,8 @@ class Home extends Component {
       });
   }
 
-
   render() {
-    console.log("Screen Home() : Start Rander ................. ");
-
+    //console.log("Screen Home() : Start Rander ................. ");
     return (
         <>
         <React.Fragment>
@@ -83,9 +88,9 @@ class Home extends Component {
                         <Text style={styles.itemtext}>date           : {item.txn_date}</Text>
                         <Text style={styles.itemtext}>time           : {item.txn_time}</Text>
                         {/* button click to details page per transaction id */}
-                         <Button style={styles.buttonStyle} onPress={() => { this.goToDetails(item.item_id,item.txn_type)}}> 
-                              <Text style={styles.buttonText}> View </Text> 
-                        </Button>
+                        <TouchableOpacity style={styles.buttonStyle} onPress={() => { this.goToDetails(item.item_id, item.txn_type) }}>
+                          <Text style={styles.buttonText}> View </Text>
+                        </TouchableOpacity>
                       </View>
                     )
                   })
@@ -130,11 +135,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#67f',
     borderWidth: 1,
     borderColor: '#336633',
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingTop: 5,
+    paddingBottom: 5,
     paddingRight: 25,
     paddingLeft: 25,
-    marginTop: 10,
+    marginTop: 5,
     width: 300
   },
   buttonText : {

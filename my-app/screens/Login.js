@@ -40,12 +40,12 @@ class Login extends Component {
   handleOnLogin = async (values, actions) => {
     const { email, password } = values
     try {
-      const response = await this.props.firebase.loginWithEmail(email, password)
+        const response = await this.props.firebase.loginWithEmail(email, password)
 
-      if (response.user) {
-        //this.props.navigation.navigate('App')
-        this.props.navigation.navigate('Main')
-      }
+        if (response.user) 
+        {
+          this.props.navigation.navigate('App')
+        }
     } catch (error) {
       actions.setFieldError('general', error.message)
     } finally {

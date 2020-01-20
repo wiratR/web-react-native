@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import { Appbar, Button } from 'react-native-paper'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
-import ScreenName from '../components/ScreenName.js'
-import Header from '../components/Header.js'
+// implement menu
+import ScreenName from '../components/ScreenName'    // pull in the ScreenName component from ScreenName.js
+import Header from '../components/Header'            // pull in header with DrawerTrigger
+
+let detailsRef = firebase.firestore().collection('txn_usage')
 
 class Details extends Component {
 
-    constructor(props) {
+    constructor(props) {   
         super(props);
         this.state = {
             responseData    : {},
@@ -20,14 +22,13 @@ class Details extends Component {
     }
 
     resetForm = () => {
-          console.log("Screen Details() : reset rorm");
+          //console.log("Screen Details() : reset rorm");
           let txnId = this.props.navigation.getParam('item', '');
           let txnType = this.props.navigation.getParam('type', '');
           let setNewData = [];
           let setNewStatus = [];
-          const ref = firebase.firestore().collection('txn_usage').doc(txnId);
-          ref.get()
-          .then((doc) => {
+          detailsRef.doc(txnId)
+          .get().then((doc) => {
               if (doc.exists) {
                  // console.log("Document data:", doc.data());  
                   const details = doc.data();
@@ -84,20 +85,10 @@ class Details extends Component {
     // go back to home pages
     goBackToHome = () => this.props.navigation.navigate('Home')
     
-    // handle sign out button
-    handleSignout = async () => {
-        try {
-            await this.props.firebase.signOut()
-            this.props.navigation.navigate('Auth')
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     render() {
-       console.log("Screen Details() : Start Rander ................. ");
-       var isLoading    = this.state.isLoading;
-       var isNewTxnId   = this.props.navigation.getParam('item', '');
+       //console.log("Screen Details() : Start Rander ................. ");
+       let isLoading    = this.state.isLoading;
+       let isNewTxnId   = this.props.navigation.getParam('item', '');
      //  console.log("Screen Details() : old ref txn Name " + this.state.refkey);
      //  console.log("Screen Details() : Txn name " + isNewTxnId);
        if ( this.state.refkey != isNewTxnId && (isLoading == false))
@@ -120,6 +111,7 @@ class Details extends Component {
                 </>
             )
        }
+       // still loading
        if (isLoading) {
             return(
                 <>
@@ -148,8 +140,7 @@ class Details extends Component {
                     <ScreenName name={'Details'}/>
                     </View>
                 </React.Fragment>
-                <ScrollView
-                    >
+                <ScrollView>
                     <View style={styles.container}>
                         {this.state.type == 'refund'
                             ? <View style={styles.itemsList}>
@@ -157,8 +148,8 @@ class Details extends Component {
                                 {this.state.responseData.map((item, index) => {
                                 return (
                                     <View key={index}>
-                                        <Text style={styles.itemtext}>Transaction Type ={this.state.type}</Text>
-                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
+                                        <Text style={styles.itemtext}>Transaction Type = {this.state.type}</Text>
+                                        <Text style={styles.itemtext}>---------------------- {item.item_id} -------------------- </Text>
                                         <Text style={styles.itemtext}>partnerTransactionId : {item.partnerTransactionId} </Text>
                                         <Text style={styles.itemtext}>refundTransactionDateTime : {item.refundTransactionDateTime} </Text>
                                         <Text style={styles.itemtext}>transactionId : {item.transactionId}</Text>
@@ -168,9 +159,9 @@ class Details extends Component {
                                 {this.state.responseStatus.map((item, index) => {
                                 return (
                                     <View key={index}>
-                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
-                                        <Text style={styles.itemtext}>code : {item.code} </Text>
-                                        <Text style={styles.itemtext}>description : {item.description} </Text>
+                                        <Text style={styles.itemtext}>--------------------- {item.item_id} -------------------</Text>
+                                        <Text style={styles.itemtext}>code            : {item.code} </Text>
+                                        <Text style={styles.itemtext}>description  : {item.description} </Text>
                                     </View>
                                 )
                                 })}
@@ -184,7 +175,7 @@ class Details extends Component {
                                 return (
                                     <View key={index}>
                                         <Text style={styles.itemtext}>Transaction Type = {this.state.type}</Text>
-                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
+                                        <Text style={styles.itemtext}>---------------------- {item.item_id} -------------------- </Text>
                                         <Text style={styles.itemtext}>partnerTransactionId : {item.partnerTransactionId} </Text>
                                         <Text style={styles.itemtext}>billerId : {item.billerId} </Text>
                                         <Text style={styles.itemtext}>payerBankCode : {item.payerBankCode}</Text>
@@ -201,9 +192,9 @@ class Details extends Component {
                                 {this.state.responseStatus.map((item, index) => {
                                 return (
                                     <View key={index}>
-                                        <Text style={styles.itemtext}>{item.item_id} => </Text>
-                                        <Text style={styles.itemtext}>code : {item.code} </Text>
-                                        <Text style={styles.itemtext}>description : {item.description} </Text>
+                                        <Text style={styles.itemtext}>--------------------- {item.item_id} -------------------</Text>
+                                        <Text style={styles.itemtext}>code            : {item.code} </Text>
+                                        <Text style={styles.itemtext}>description  : {item.description} </Text>
                                     </View>
                                 )
                                 })}

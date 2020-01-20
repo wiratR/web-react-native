@@ -8,24 +8,19 @@ import LogoutScreen from '../screens/Logout'
 const DrawerNavigator = createDrawerNavigator(
     {
         //Drawer Optons and indexing
-        Home : 
-        {
+        Home : {
             screen : HomeScreen,
         },
-        Details : 
-        {
+        Details : {
             screen : DetailsScreen,
         },
-        Location : 
-        {
+        Location : {
             screen : LocationScreen,
         },
-        Device : 
-        {
+        Device : {
             screen : DeviceScreen,
         },
-        Logout : 
-        {
+        Logout : {
             screen : LogoutScreen,
         },
     },
@@ -33,7 +28,6 @@ const DrawerNavigator = createDrawerNavigator(
         initialRouteName: 'Home',
         headerMode: 'none',
     }
-);
-
+)
 
 export default DrawerNavigator;
