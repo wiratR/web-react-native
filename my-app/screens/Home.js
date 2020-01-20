@@ -11,13 +11,6 @@ let txnRef = firebase.database().ref('tx_usage')
 
 class Home extends Component {
 
-  /*
-  static navigationOptions = {
-    drawerIcon: ({ tintColor }) => (
-      <Icon name="home" style={{ fontSize: 24, color: tintColor }} />
-    )
-  }*/
-
   constructor(props) {
     super(props);
     this.state = {

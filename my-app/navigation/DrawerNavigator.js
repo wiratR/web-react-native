@@ -5,25 +5,18 @@ import DetailsScreen from '../screens/Details'
 import LocationScreen from '../screens/Location'
 import DeviceScreen from '../screens/Device'
 import LogoutScreen from '../screens/Logout'
-
-import { Ionicons } from '@expo/vector-icons'  // https://expo.github.io/vector-icons/
+import { Ionicons } from '@expo/vector-icons'  
+import Hidden from '../components/Hidden'
 
 const DrawerNavigator = createDrawerNavigator(
     {
         //Drawer Optons and indexing
         Home : {
             screen : HomeScreen,
+            // sample to add a icons $https://expo.github.io/vector-icons/
             navigationOptions: {
                 drawerIcon: ({ tintColor }) => (
                     <Ionicons name="ios-home" color={tintColor} size={25} />
-                )
-            }
-        },
-        Details : {
-            screen : DetailsScreen,
-            navigationOptions: {
-                drawerIcon: ({ tintColor }) => (
-                    <Ionicons name="ios-albums" color={tintColor} size={25} />
                 )
             }
         },
@@ -51,11 +44,38 @@ const DrawerNavigator = createDrawerNavigator(
                 )
             }
         },
+        Details: {
+            screen: DetailsScreen,
+            navigationOptions: {
+                // test hide navigation menu
+                drawerLabel: <Hidden />,
+            }
+        },
     },
     {
         initialRouteName: 'Home',
         headerMode: 'none',
     }
 )
+
+
+
+// This code let you hide the bottom app bar when "Details" is rendering
+DrawerNavigator.navigationOptions = ({ navigation }) => {
+    let tabBarVisible;
+    if (navigation.state.routes.length > 1) {
+        navigation.state.routes.map(route => {
+            if (route.routeName === "DetailsScreen") {
+                tabBarVisible = false;
+            } else {
+                tabBarVisible = true;
+            }
+        });
+    }
+
+    return {
+        tabBarVisible
+    };
+};
 
 export default DrawerNavigator;
