@@ -2,3 +2,9 @@
 .env
 my-app/config/Firebase/firebaseConfig.js
 my-app/package-lock.json
+my-app/public/index.html
+my-app/public/404.html
+my-app/.firebase/hosting.cHVibGlj.cache
+my-app/.firebaserc
+my-app/firebase.json
+my-app/yarn-error.log

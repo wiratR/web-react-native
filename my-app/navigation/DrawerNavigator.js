@@ -1,6 +1,7 @@
 import React from 'react'
 import { createDrawerNavigator } from 'react-navigation-drawer'
 import HomeScreen from '../screens/Home'
+import TransactionScreen from '../screens/Transaction'
 import DetailsScreen from '../screens/Details'
 import LocationScreen from '../screens/Location'
 import DeviceScreen from '../screens/Device'
@@ -20,11 +21,11 @@ const DrawerNavigator = createDrawerNavigator(
                 )
             }
         },
-        Location : {
-            screen : LocationScreen,
+        Transaction: {
+            screen: TransactionScreen,
             navigationOptions: {
                 drawerIcon: ({ tintColor }) => (
-                    <Ionicons name="ios-bus" color={tintColor} size={25} />
+                    <Ionicons name="ios-card" color={tintColor} size={25} />
                 )
             }
         },
@@ -33,6 +34,14 @@ const DrawerNavigator = createDrawerNavigator(
             navigationOptions: {
                 drawerIcon: ({ tintColor }) => (
                     <Ionicons name="ios-desktop" color={tintColor} size={25} />
+                )
+            }
+        },
+        Location : {
+            screen : LocationScreen,
+            navigationOptions: {
+                drawerIcon: ({ tintColor }) => (
+                    <Ionicons name="ios-bus" color={tintColor} size={25} />
                 )
             }
         },
@@ -57,7 +66,6 @@ const DrawerNavigator = createDrawerNavigator(
         headerMode: 'none',
     }
 )
-
 
 
 // This code let you hide the bottom app bar when "Details" is rendering

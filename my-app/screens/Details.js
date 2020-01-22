@@ -2,11 +2,14 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { withFirebaseHOC } from '../config/Firebase'
 import firebase from 'firebase';
+//import firestore from '@react-native-firebase/firestore';
 // implement menu
 import ScreenName from '../components/ScreenName'    // pull in the ScreenName component from ScreenName.js
 import Header from '../components/Header'            // pull in header with DrawerTrigger
 
 let detailsRef = firebase.firestore().collection('txn_usage')
+
+//const detailsRef = firestore.collection('txn_usage');
 
 class Details extends Component {
 
@@ -83,7 +86,7 @@ class Details extends Component {
     }
 
     // go back to home pages
-    goBackToHome = () => this.props.navigation.navigate('Home')
+    goBackToHome = () => this.props.navigation.navigate('Transaction')
     
     render() {
        //console.log("Screen Details() : Start Rander ................. ");
